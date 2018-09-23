@@ -12,12 +12,19 @@ Books
   </div>
 </form>
 <h1>Books</h1>
-<ul>
+<ul class="list-group">
   {% for book in books %}
-  <li>
-    <h2>{{ book. title }}</h2>
-    <p>{{book.name}}</p>
 
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col-10">
+          <h2>{{ book. title }}</h2>
+          <p>{{book.name}}</p>
+        </div>
+        <div class="col-2" style="text-align: center; vertical-align: middle;">
+          <p class="item-book-raiting" style="text-align: center;">92</p>
+        </div>
+      </div>
   </li>
   {% endfor %}
 </ul>
