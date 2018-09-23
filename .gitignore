@@ -1,5 +1,6 @@
-flask_session
-env
+flask_session/
+env/
+__pycache__/
 
 books.csv
 *.pyc
