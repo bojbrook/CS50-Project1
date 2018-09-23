@@ -25,3 +25,18 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
     books = db.execute("select * from books")
     return render_template("index.html", books=books)
+
+@app.route("/books")
+def books():
+    sql_command = "SELECT title, name FROM books INNER JOIN authors on books.author_id = authors.id"
+    books = db.execute(sql_command)
+    return render_template("index.html", books=books)
+
+@app.route("/search/<string:item>")
+def search(item):
+    sql_command = f"SELECT title, name FROM books INNER JOIN authors on books.author_id = authors.id AND books.isbn='{item}'"
+    if db.execute(sql_command).rowcount == 0:
+        return render_template("error.html", message="No book found")
+    else:
+        books = db.execute(sql_command)
+        return render_template("index.html", books=books)

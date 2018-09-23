@@ -1,16 +1,24 @@
 {% extends "base.html" %}
 
 {% block title %}
-  Books
+Books
 {% endblock %}
 
 {% block body %}
-    <h1>Books</h1>
-    <ul>
-      {% for book in books %}
-          <li>
-                {{ book }}  
-          </li>
-      {% endfor %}
-    </ul>
+<form class="" action="{{url_for("index")}}" method="post">
+  <div class="form-group">
+    <input type="text" class="form-control" placeholder="Search">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+<h1>Books</h1>
+<ul>
+  {% for book in books %}
+  <li>
+    <h2>{{ book. title }}</h2>
+    <p>{{book.name}}</p>
+
+  </li>
+  {% endfor %}
+</ul>
 {% endblock %}
