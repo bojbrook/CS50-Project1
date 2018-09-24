@@ -5,9 +5,9 @@ Books
 {% endblock %}
 
 {% block body %}
-<form class="" action="{{url_for("index")}}" method="post">
+<form action="{{url_for("search")}}" method="get">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Search">
+    <input type="text" class="form-control" name="input-book-search" placeholder="Search">
     <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
@@ -15,16 +15,9 @@ Books
 <ul class="list-group">
   {% for book in books %}
 
-    <li class="list-group-item">
-      <div class="row">
-        <div class="col-10">
-          <h2>{{ book. title }}</h2>
-          <p>{{book.name}}</p>
-        </div>
-        <div class="col-2" style="text-align: center; vertical-align: middle;">
-          <p class="item-book-raiting" style="text-align: center;">92</p>
-        </div>
-      </div>
+  <li class="list-group-item">
+    <a class="item-link" href="{{url_for("book_info",title=book.title)}}" style="font-size: 28px;">{{ book.title }}</a>
+    <p>{{ book.name }}</p>
   </li>
   {% endfor %}
 </ul>
