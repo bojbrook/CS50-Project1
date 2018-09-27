@@ -22,15 +22,22 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 @app.route("/")
+@app.route("/index")
 def index():
+    if not session.get('logged_in'):
+      return render_template('login.html')
     sql_command = "SELECT title, name FROM books INNER JOIN authors on books.author_id = authors.id"
     books = db.execute(sql_command)
     return render_template("index.html", books=books)
 
 
-@app.route("/login")
+@app.route("/login", methods=["POST"])
 def login():
-    return render_template("login.html")
+    if request.form['InputPassword'] == 'password' and request.form['InputUsername'] == 'bojbrook':
+       session['logged_in'] = True
+    else:
+        print("Wrong input")
+    return redirect(url_for('index'))
 
 
 @app.route("/books/<string:title>")
