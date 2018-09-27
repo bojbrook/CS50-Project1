@@ -27,6 +27,12 @@ def index():
     books = db.execute(sql_command)
     return render_template("index.html", books=books)
 
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
 @app.route("/books/<string:title>")
 def book_info(title):
     sql_command = f"SELECT title, name , year from books INNER JOIN authors on books.author_id = authors.id AND books.title='{title}'"
