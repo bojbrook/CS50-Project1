@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template ,session, request
+from flask import Flask, render_template ,session, request, redirect
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -29,6 +29,10 @@ def index():
     sql_command = "SELECT title, name FROM books INNER JOIN authors on books.author_id = authors.id"
     books = db.execute(sql_command)
     return render_template("index.html", books=books)
+
+@app.route("/sign-up")
+def sign_up():
+    return render_template("sign_up.html")
 
 
 @app.route("/login", methods=["POST"])
