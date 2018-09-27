@@ -29,7 +29,9 @@ def index():
 
 @app.route("/books/<string:title>")
 def book_info(title):
-    return render_template("book.html", title=title)
+    sql_command = f"SELECT title, name , year from books INNER JOIN authors on books.author_id = authors.id AND books.title='{title}'"
+    book = db.execute(sql_command).fetchone()
+    return render_template("book.html", book=book)
 
 # Search for individual book
 @app.route("/search", methods=["GET"])
