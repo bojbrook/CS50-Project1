@@ -35,9 +35,14 @@ def login():
 
 @app.route("/books/<string:title>")
 def book_info(title):
-    sql_command = f"SELECT title, name , year from books INNER JOIN authors on books.author_id = authors.id AND books.title='{title}'"
-    book = db.execute(sql_command).fetchone()
-    return render_template("book.html", book=book)
+    get_book_sql_command = f"SELECT title, name , year FROM books INNER JOIN authors on books.author_id = authors.id AND books.title='{title}'"
+    get_review_sql_command = f"SELECT username, title, review FROM ((user_reviews \
+	                            INNER JOIN books ON user_reviews.book_id = books.id AND books.title='{title}') \
+	                            INNER JOIN users ON user_reviews.user_id = users.id) "
+                                
+    book = db.execute(get_book_sql_command).fetchone()
+    reviews = db.execute(get_review_sql_command)
+    return render_template("book.html", book=book, reviews=reviews)
 
 # Search for individual book
 @app.route("/search", methods=["GET"])

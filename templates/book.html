@@ -5,7 +5,23 @@
 {% endblock %}
 
 {% block body %}
-<h1>{{book.title}}</h1>
-<h2>{{book.name}}</h2>
-<h3>{{book.year}}</h3>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">{{book.title}}</h1>
+      <h4 class="display-4">{{book.name}}</h4>
+      <p class="lead">{{book.year}}</p>
+    </div>
+  </div>
+
+<ul>
+  {% for review in reviews %}
+    <li >
+      <span>
+        <h3>{{review.username}}</h3>
+        <p>{{review.review}}</p>
+      </span>
+    </li>
+  {% endfor %}
+</ul>
 {% endblock %}
