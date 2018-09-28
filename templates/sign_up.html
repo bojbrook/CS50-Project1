@@ -10,15 +10,15 @@
     <h1>Book Review Sign Up</h1>
   </div>
   <div class="container"> 
-      <form>
+      <form action="{{url_for("add_user") }}" method="POST">
         <div class="form-group">
-          <input class="form-control" type="text" placeholder="Name"/>
+          <input name="inputName"class="form-control" type="text" placeholder="Name"/>
         </div>
         <div class="form-group">
-          <input class="form-control" type="text" placeholder="Username"/>
+          <input name="inputUserName" class="form-control" type="text" placeholder="Username"/>
         </div>
         <div class="form-group">
-          <input class="form-control" type="password" placeholder="password"/>
+          <input name="inputPassword" class="form-control" type="password" placeholder="password"/>
         </div>
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
