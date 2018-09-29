@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template ,session, request, redirect, url_for
+from flask import Flask, render_template ,session, request, redirect, url_for,jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -30,7 +30,8 @@ def index():
       return render_template('login.html')
     sql_command = "SELECT title, name FROM books INNER JOIN authors on books.author_id = authors.id"
     books = db.execute(sql_command)
-    return render_template("index.html", books=books)
+    user_name = session.get('user')
+    return render_template("index.html", user=user_name ,books=books)
 
 @app.route("/sign-up")
 def sign_up():
@@ -58,10 +59,20 @@ def add_user():
     # return redirect(url_for('index'))
 @app.route("/login", methods=["POST"])
 def login():
-    if request.form['InputPassword'] == 'password' and request.form['InputUsername'] == 'bojbrook':
-       session['logged_in'] = True
+    userName = request.form.get("InputUsername")
+    password = request.form.get("InputUserPassword") 
+    get_user_sql_command=f"SELECT * FROM users WHERE userName='{userName}'"
+    user = db.execute(get_user_sql_command).fetchone()
+    
+    if(user and sha256_crypt.verify(password, user.password)):
+        session['logged_in'] = True
+        session['user'] = user.username
+        return redirect(url_for('index'))
     else:
-        print("Wrong input")
+        print("One of them is wrong")   
+    # else:
+    #     print("Wrong input")
+    # return render_template("login.hmtl")
     return redirect(url_for('index'))
 
 
@@ -75,6 +86,25 @@ def book_info(title):
     book = db.execute(get_book_sql_command).fetchone()
     reviews = db.execute(get_review_sql_command)
     return render_template("book.html", book=book, reviews=reviews)
+
+@app.route("/books/<string:title>/add-comment", methods=["POST"])
+def add_comment(title):
+
+    if not session.get('logged_in'):
+        return render_template("error.html", message="Please Log In")
+    
+    review = request.form.get("input_user_comment")
+
+    book = db.execute(f"SELECT * FROM books WHERE title='{title}'").fetchone()
+    user = db.execute(f"SELECT * FROM users WHERE username='{session.get('user')}'").fetchone()
+
+    #Inserting into user reviews
+    submit_sql_command = f"INSERT INTO user_reviews (book_id, user_id, review) VALUES (:book_id,:user_id,:review)"
+    db.execute(submit_sql_command,{"book_id": book.id, "user_id": user.id, "review": review})
+    db.commit()
+
+    return redirect(url_for('book_info',title=title))
+
 
 # Search for individual book
 @app.route("/search", methods=["GET"])
@@ -103,3 +133,25 @@ def search():
             return render_template("index.html", books=books)
     else:
         return render_template("error.html", message="Not correct message")
+
+
+# API ROUTES
+@app.route("/api/<string:title>", methods=["GET"])
+def get_book_json(title):
+    sql_command = f"SELECT * FROM books WHERE title='{title}'"
+
+    if(db.execute(sql_command).rowcount == 0):
+        return render_template("error.html", message="No book found")
+
+    get_book_sql_command = f"SELECT isbn, title, name , year, book_raiting FROM books INNER JOIN authors on books.author_id = authors.id AND books.title='{title}'"
+    book = db.execute(get_book_sql_command).fetchone()
+
+    return jsonify({
+            "isbn": book.isbn,
+            "title": book.title,
+            "author": book.name,
+            "year": book.year,
+            "raiting": book.book_raiting
+        })
+
+    return title

@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<div class="jumbotron jumbotron-fluid">
+  <div class="jumbotron jumbotron-fluid">
     <div class="container">
       <h1 class="display-4">{{book.title}}</h1>
       <h4 class="display-4">{{book.name}}</h4>
@@ -14,9 +14,16 @@
     </div>
   </div>
 
+  <div class="container">
+    <form action="{{url_for("add_comment",title=book.title)}}" method="POST">
+      <input name="input_user_comment" type="text" style="width: 300px; height: 100px;"/>
+      <button type="submit" class="btn btn-primary">Submit</button>   
+    </form>
+  </div>
+
 <ul>
   {% for review in reviews %}
-    <li >
+    <li>
       <span>
         <h3>{{review.username}}</h3>
         <p>{{review.review}}</p>
@@ -24,4 +31,6 @@
     </li>
   {% endfor %}
 </ul>
+
+
 {% endblock %}
